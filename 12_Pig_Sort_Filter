@@ -1,0 +1,77 @@
+✅ Pig Sorting & Filtering Practical (Ubuntu – Pig CLI)
+
+Create movie file → Upload to HDFS → Write Pig script → Filter “TV Show” → Sort by year → Show top 10
+
+✅ 1. Create Movie Dataset (movies.txt)
+
+Run:
+
+gedit movies.txt
+
+Paste sample comma-separated data:
+
+Stranger Things,TV Show,2016,8.7
+Breaking Bad,TV Show,2008,9.5
+Money Heist,TV Show,2017,8.3
+Dark,TV Show,2017,8.8
+Friends,TV Show,1994,8.9
+Inception,Movie,2010,8.8
+The Witcher,TV Show,2019,8.2
+Narcos,TV Show,2015,8.8
+Mirzapur,TV Show,2018,8.5
+Sherlock,TV Show,2010,9.1
+The Office,TV Show,2005,8.8
+
+✅ Format: title,type,release_year,rating
+
+Save → Close.
+
+✅ 2. Put File into HDFS
+
+Run:
+
+hdfs dfs -mkdir -p /input
+hdfs dfs -put -f movies.txt /input/
+
+✅ 3. Create Pig Script (tvshows_sort.pig)
+
+Run:
+
+gedit tvshows_sort.pig
+
+Paste this Pig Latin code:
+
+-- Load movie dataset
+movies = LOAD '/input/movies.txt' USING PigStorage(',')
+AS (title:chararray, type:chararray, release_year:int, rating:double);
+
+-- Filter only TV Shows
+tv_shows = FILTER movies BY type == 'TV Show';
+
+-- Sort by release year in descending order
+sorted_shows = ORDER tv_shows BY release_year DESC;
+
+-- Take top 10
+top_10 = LIMIT sorted_shows 10;
+
+-- Display results
+DUMP top_10;
+
+Save → Close.
+
+✅ 4. Run the Pig Script
+pig tvshows_sort.pig
+
+✅ 5. Expected Output
+(The Witcher,TV Show,2019,8.2)
+(Mirzapur,TV Show,2018,8.5)
+(Money Heist,TV Show,2017,8.3)
+(Dark,TV Show,2017,8.8)
+(Stranger Things,TV Show,2016,8.7)
+(Narcos,TV Show,2015,8.8)
+(Sherlock,TV Show,2010,9.1)
+(The Office,TV Show,2005,8.8)
+(Breaking Bad,TV Show,2008,9.5)
+(Friends,TV Show,1994,8.9)
+
+(Top 10 TV Shows sorted by newest year first.)

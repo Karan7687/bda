@@ -1,0 +1,88 @@
+✅ Hive Sorting & Aggregation Practical (Ubuntu – Hive CLI)
+
+Create CSV → Upload to HDFS → Create Table → Load Data → Total Sales per Region → Sort Descending
+
+✅ 1. Create CSV File (sales_data.csv)
+
+Run:
+
+gedit sales_data.csv
+
+
+Paste sample data:
+
+
+North	Laptop	55000
+South	Mobile	30000
+East	Tablet	15000
+North	Mobile	20000
+West	Laptop	40000
+South	TV	35000
+East	Watch	5000
+
+
+✅ Note: Data uses TAB (\t) separator, as required by the table.
+
+Save → Close.
+
+✅ 2. Put CSV File Into HDFS
+
+Run:
+
+hdfs dfs -mkdir -p /input
+hdfs dfs -put -f sales_data.csv /input/
+
+
+Check:
+
+hdfs dfs -ls /input
+
+✅ 3. Start Hive
+start-dfs.sh
+start-yarn.sh
+hive
+
+✅ 4. Create the Hive Table
+
+In Hive CLI:
+
+CREATE TABLE sales_data (
+  region STRING,
+  product STRING,
+  amount DOUBLE
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t';
+
+✅ 5. Load Data into Hive Table
+LOAD DATA INPATH '/input/sales_data.csv' INTO TABLE sales_data;
+
+✅ 6. Query 1 – Total Sales per Region
+SELECT region, SUM(amount) AS total_sales
+FROM sales_data
+GROUP BY region;
+
+
+✅ Expected sample:
+
+North   75000
+South   65000
+East    20000
+West    40000
+
+✅ 7. Query 2 – Sort by Total Sales (Descending)
+SELECT region, SUM(amount) AS total_sales
+FROM sales_data
+GROUP BY region
+ORDER BY total_sales DESC;
+
+
+✅ Expected sample:
+
+North   75000
+South   65000
+West    40000
+East    20000
+
+✅ 8. Exit Hive
+exit;

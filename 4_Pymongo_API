@@ -1,0 +1,72 @@
+✅ MongoDB PyMongo Practical (Ubuntu – Python + MongoDB)
+
+Connect → Insert → Retrieve → Update → Display All
+
+✅ 1. Install PyMongo (Ubuntu VM)
+Run in terminal:
+
+pip3 install pymongo
+
+✅ 2. Create Python File
+
+Run:
+
+gedit slip4.py
+
+Paste this code:
+
+
+from pymongo import MongoClient
+
+# 1. Connect to MongoDB
+client = MongoClient('mongodb://localhost:27017/')
+db = client['company_db']
+employees = db['employees']
+
+# 2. Insert 3 employee documents
+employee_data = [
+    {"name": "John", "department": "IT", "salary": 60000},
+    {"name": "Alice", "department": "HR", "salary": 45000},
+    {"name": "Bob", "department": "Finance", "salary": 75000}
+]
+employees.insert_many(employee_data)
+
+# 3. Retrieve records where salary > 50,000
+high_earners = employees.find({"salary": {"$gt": 50000}})
+print("Employees with salary > 50,000:")
+for emp in high_earners:
+    print(emp)
+
+# 4. Update one record and print all documents
+employees.update_one(
+    {"name": "Alice"},
+    {"$set": {"salary": 52000}}
+)
+
+print("\nAll employees:")
+for emp in employees.find():
+    print(emp)
+
+
+
+Save → Close.
+
+✅ 3. Run the Python Program
+
+Run:
+
+python3 slip4.py
+
+This will:
+
+✔ Connect to MongoDB
+✔ Insert 3 employees
+✔ Show employees with salary > 50,000
+✔ Update Alice's salary
+✔ Print all documents
+
+✅ 4. (Optional) Verify in Mongo Shell
+
+mongosh
+use company_db
+db.employees.find().pretty()

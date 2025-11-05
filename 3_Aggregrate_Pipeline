@@ -1,0 +1,60 @@
+✅ MongoDB Aggregation Pipeline Practical (Ubuntu – Mongo Shell)
+
+Insert Data → Group by Department → Average Salary → Sort Descending
+
+✅ 1. Open Mongo Shell
+
+mongosh
+
+✅ 2. Create / Switch to Database
+
+use company_db
+
+✅ 3. Insert Employee Records
+
+db.employees.insertMany([
+{name: "John", department: "IT", salary: 50000},
+{name: "Alice", department: "HR", salary: 45000},
+{name: "Bob", department: "IT", salary: 60000},
+{name: "Carol", department: "Finance", salary: 70000},
+{name: "David", department: "HR", salary: 55000},
+{name: "Eve", department: "Finance", salary: 65000}
+])
+
+
+---
+
+✅ **4. Aggregation Pipeline – Group by Department & Find Average Salary**
+
+db.employees.aggregate([
+ {
+   $group: {
+     _id: "$department",
+     averageSalary: { $avg: "$salary" }
+   }
+ }
+])
+
+---
+
+✅ **5. Sort Results in Descending Order of Average Salary**
+
+db.employees.aggregate([
+ {
+   $group: {
+     _id: "$department",
+     averageSalary: { $avg: "$salary" }
+   }
+ },
+ {
+   $sort: { averageSalary: -1 }
+ }
+])
+
+---
+
+✅ **6. Exit Mongo Shell**
+
+exit
+
+---

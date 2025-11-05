@@ -1,0 +1,62 @@
+✅ MongoDB JSON Querying Practical (Ubuntu – Mongo Shell)
+
+Create JSON → Import JSON → Display Electronics → Count > 10,000
+
+✅ 1. Create JSON File (products.json)
+Run:
+
+gedit products.json
+
+
+Paste:
+
+[
+  {"name": "Laptop", "category": "Electronics", "price": 55000},
+  {"name": "Phone", "category": "Electronics", "price": 12000},
+  {"name": "Shirt", "category": "Clothing", "price": 1500},
+  {"name": "TV", "category": "Electronics", "price": 30000},
+  {"name": "Watch", "category": "Accessories", "price": 9000}
+]
+
+
+Save → Close.
+
+✅ 2. Import JSON Into MongoDB
+Run in terminal:
+
+mongoimport --db product_db --collection products --file products.json --jsonArray
+
+Expected:
+
+5 document(s) imported successfully
+
+
+✅ 3. Open Mongo Shell
+
+mongosh
+
+✅ 4. Switch to Database
+
+use product_db
+
+Output:
+
+switched to db product_db
+
+
+✅ 5. Display All Electronics Products
+
+db.products.find({category: "Electronics"}).pretty()
+
+✅ 6. Count Products Priced Above ₹10,000
+
+db.products.countDocuments({price: {$gt: 10000}})
+
+Expected:
+
+3
+
+
+✅ 7. Exit Mongo Shell
+
+exit

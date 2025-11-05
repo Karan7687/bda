@@ -1,0 +1,81 @@
+✅ Pig Join Operation Practical (Ubuntu – Pig CLI)
+
+Create employee + department files → Upload to HDFS → Write Pig script → JOIN on dept_id → Display employee + dept name
+
+✅ 1. Create Employee File (employee_details.txt)
+
+Run:
+
+gedit employee_details.txt
+
+
+Paste (comma-separated):
+
+1,Arjun,101
+2,Riya,102
+3,Vikram,101
+4,Sana,103
+5,Meera,102
+
+
+Save → Close.
+
+✅ 2. Create Department File (department.txt)
+
+Run:
+
+gedit department.txt
+
+
+Paste:
+
+101,Computer Science
+102,Electronics
+103,Mechanical
+
+
+Save → Close.
+
+✅ 3. Put Both Files into HDFS
+hdfs dfs -mkdir -p /input
+hdfs dfs -put -f employee_details.txt /input/
+hdfs dfs -put -f department.txt /input/
+
+✅ 4. Create Pig Script (emp_dept_join.pig)
+
+Run:
+
+gedit emp_dept_join.pig
+
+
+Paste this Pig Latin script:
+
+-- Load employee dataset
+employees = LOAD '/input/employee_details.txt' USING PigStorage(',')
+            AS (emp_id:int, name:chararray, dept_id:int);
+
+-- Load department dataset
+departments = LOAD '/input/department.txt' USING PigStorage(',')
+              AS (dept_id:int, dept_name:chararray);
+
+-- Perform join on dept_id
+joined_data = JOIN employees BY dept_id, departments BY dept_id;
+
+-- Select employee name + department name
+result = FOREACH joined_data GENERATE employees::name, departments::dept_name;
+
+-- Display the output
+DUMP result;
+
+
+Save → Close.
+
+✅ 5. Run the Pig Script
+pig emp_dept_join.pig
+
+✅ 6. Expected Output
+(Arjun,Computer Science)
+(Vikram,Computer Science)
+(Riya,Electronics)
+(Meera,Electronics)
+(Sana,Mechanical)

@@ -1,0 +1,85 @@
+✅ Slip 5 – Hive (Basic Querying Practical)
+
+Create Table → Load CSV → Movies per Country → Top 5 Years
+
+✅ 1. Start Hadoop Services (Terminal)
+Run these commands:
+
+start-dfs.sh
+start-yarn.sh
+
+Check services:
+
+jps
+
+You must see:
+NameNode, DataNode, SecondaryNameNode, ResourceManager, NodeManager.
+
+✅ 2. Create CSV File (movies.csv)
+Run:
+
+gedit movies.csv
+
+Paste:
+
+Inception,Movie,2010,USA
+Dangal,Movie,2016,India
+Parasite,Movie,2019,South Korea
+Avengers,Movie,2012,USA
+Bahubali,Movie,2015,India
+
+Save → Close.
+
+✅ 3. Upload CSV to HDFS
+
+hdfs dfs -put movies.csv /user/hive/warehouse/
+
+✅ 4. Start Hive Shell
+
+hive
+
+✅ 1. Create the Hive Table
+
+CREATE TABLE movies (
+title STRING,
+type STRING,
+release_year INT,
+country STRING
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE;
+
+---
+
+✅ **2. Load CSV File Into the Hive Table**
+
+(Your CSV is already uploaded to HDFS)
+
+LOAD DATA INPATH '/user/hive/warehouse/movies.csv'
+INTO TABLE movies;
+
+---
+
+✅ **3. Query 1 – Number of Movies Per Country**
+
+SELECT country, COUNT(\*) AS movie_count
+FROM movies
+GROUP BY country;
+
+---
+
+✅ **4. Query 2 – Top 5 Recent Release Years**
+
+SELECT release_year
+FROM movies
+ORDER BY release_year DESC
+LIMIT 5;
+
+---
+
+✅ **5. Exit Hive**
+
+exit
+
+---

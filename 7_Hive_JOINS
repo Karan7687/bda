@@ -1,0 +1,97 @@
+✅ Hive Joins & Filtering Practical (Ubuntu – Hive CLI)
+
+Create CSV → Upload to HDFS → Create Tables → Load Data → INNER JOIN → Show Total Order Amount per Customer
+
+✅ 1. Create customers.csv
+
+Run:
+
+gedit customers.csv
+
+
+Paste:
+
+1	Arjun	Mumbai
+2	Riya	Pune
+3	Vikram	Delhi
+4	Sana	Bangalore
+
+
+✅ Note: TAB (\t) separated values
+
+Save → Close.
+
+✅ 2. Create orders.csv
+
+Run:
+
+gedit orders.csv
+
+
+Paste:
+
+101	1	5000
+102	1	2000
+103	2	1500
+104	3	7000
+105	4	3000
+106	3	2500
+
+
+✅ Again, TAB-separated.
+
+Save → Close.
+
+✅ 3. Put Files into HDFS
+
+Run:
+
+hdfs dfs -mkdir -p /input
+hdfs dfs -put -f customers.csv /input/
+hdfs dfs -put -f orders.csv /input/
+
+✅ 4. Start Hive
+start-dfs.sh
+start-yarn.sh
+hive
+
+✅ 5. Create the Tables
+CREATE TABLE customers (
+  cust_id INT,
+  name STRING,
+  city STRING
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t'
+STORED AS TEXTFILE;
+
+CREATE TABLE orders (
+  order_id INT,
+  cust_id INT,
+  amount DOUBLE
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t'
+STORED AS TEXTFILE;
+
+✅ 6. Load Data into Tables
+LOAD DATA INPATH '/input/customers.csv' INTO TABLE customers;
+LOAD DATA INPATH '/input/orders.csv' INTO TABLE orders;
+
+✅ 7. Perform INNER JOIN – Total Order Amount per Customer
+SELECT c.name, SUM(o.amount) AS total_amount
+FROM customers c
+JOIN orders o ON c.cust_id = o.cust_id
+GROUP BY c.name
+ORDER BY total_amount DESC;
+
+
+✅ Expected Output:
+
+Vikram   9500
+Arjun    7000
+Sana     3000
+Riya     1500
+
+✅ 8. Exit Hive
+exit;

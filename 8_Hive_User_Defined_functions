@@ -1,0 +1,69 @@
+✅ Hive UDF Practical (Ubuntu – Hive CLI)
+
+Create Java UDF → Compile JAR → Add JAR to Hive → Create Function → Apply UDF on movies table
+
+✅ 1. Create Java File for UDF
+
+Run:
+
+gedit UpperCaseUDF.java
+
+
+Paste this code:
+
+import org.apache.hadoop.hive.ql.exec.UDF;
+import org.apache.hadoop.io.Text;
+
+public class UpperCaseUDF extends UDF {
+    public Text evaluate(Text input) {
+        if (input == null) return null;
+        return new Text(input.toString().toUpperCase());
+    }
+}
+
+
+Save → Close.
+
+✅ 2. Compile the UDF (Make JAR)
+
+Make sure Hadoop & Hive JARs are available.
+
+Run in terminal:
+
+javac -cp /usr/lib/hive/lib/*:/usr/lib/hadoop/* UpperCaseUDF.java
+jar -cvf uppercase-udf.jar UpperCaseUDF.class
+
+
+✅ Output:
+uppercase-udf.jar created
+
+✅ 3. Start Hive
+hive
+
+✅ 4. Add JAR to Hive
+ADD JAR /path/to/uppercase-udf.jar;
+
+
+(Replace path if jar is in Downloads or Desktop.)
+
+✅ 5. Create Temporary Hive Function
+CREATE TEMPORARY FUNCTION uppercase AS 'UpperCaseUDF';
+
+
+✅ Function becomes available for this session.
+
+✅ 6. Apply UDF on movies Table
+SELECT uppercase(title) AS upper_title,
+       type,
+       release_year
+FROM movies;
+
+
+✅ Expected Output:
+
+INCEPTION   Movie   2010
+DANGAL      Movie   2016
+PATHAAN     Movie   2023
+
+✅ 7. Exit Hive
+exit;

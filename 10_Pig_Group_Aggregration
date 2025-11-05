@@ -1,0 +1,75 @@
+✅ Pig Grouping & Aggregation Practical (Ubuntu – Pig CLI)
+
+Create sales file → Upload to HDFS → Write Pig script → Group by category → Calculate average → Display results
+
+✅ 1. Create Sales Data File (sales_data.txt)
+
+Run:
+
+gedit sales_data.txt
+
+
+Paste sample data (TAB separated):
+
+Electronics	Laptop	55000
+Electronics	TV	30000
+Clothing	Shirt	1500
+Clothing	Jeans	2500
+Groceries	Rice	1200
+Groceries	Oil	900
+Electronics	Mobile	20000
+
+
+✅ Ensure TAB (\t) between values.
+
+Save → Close.
+
+✅ 2. Put File into HDFS
+
+Run:
+
+hdfs dfs -mkdir -p /input
+hdfs dfs -put -f sales_data.txt /input/
+
+✅ 3. Create Pig Script (avg_sales.pig)
+
+Run:
+
+gedit avg_sales.pig
+
+
+Paste this Pig Latin code:
+
+-- Load sales data
+sales = LOAD '/input/sales_data.txt' USING PigStorage('\t')
+        AS (category:chararray, product:chararray, amount:double);
+
+-- Group by category
+grouped_sales = GROUP sales BY category;
+
+-- Calculate average amount per category
+avg_sales = FOREACH grouped_sales
+            GENERATE group AS category, AVG(sales.amount) AS avg_amount;
+
+-- Display results
+DUMP avg_sales;
+
+
+Save → Close.
+
+✅ 4. Run the Pig Script
+pig avg_sales.pig
+
+✅ 5. Expected Output
+(Electronics,35000.0)
+(Clothing,2000.0)
+(Groceries,1050.0)
+
+✅ 6. Store Output to HDFS (Optional)
+
+Add this line at the end of script:
+
+STORE avg_sales INTO '/output/avg_sales';
+
+✅ 7. View Stored Output
+hdfs dfs -cat /output/avg_sales/part-r-00000

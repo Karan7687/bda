@@ -1,0 +1,79 @@
+✅ Pig Basic Operations Practical (Ubuntu – Pig CLI)
+
+Create text file → Upload to HDFS → Write Pig script → Run → Filter marks > 70 → Display results
+
+✅ 1. Create Student Data File (students.txt)
+
+Run:
+
+gedit students.txt
+
+
+Paste sample data:
+
+Arjun,85
+Riya,65
+Vikram,92
+Sana,70
+Meera,78
+
+
+Save → Close.
+
+✅ 2. Put File into HDFS
+
+Run:
+
+hdfs dfs -mkdir -p /input
+hdfs dfs -put -f students.txt /input/
+
+✅ 3. Create Pig Script (student_filter.pig)
+
+Run:
+
+gedit student_filter.pig
+
+
+Paste Pig Latin code:
+
+-- Load student data
+students = LOAD '/input/students.txt' USING PigStorage(',')
+         AS (name:chararray, marks:int);
+
+-- Filter students with marks > 70
+good_students = FILTER students BY marks > 70;
+
+-- Select only names and marks
+result = FOREACH good_students GENERATE name, marks;
+
+-- Display output
+DUMP result;
+
+
+Save → Close.
+
+✅ 4. Run the Pig Script
+
+Run Pig in MapReduce mode:
+
+pig student_filter.pig
+
+
+OR local mode:
+
+pig -x local student_filter.pig
+
+✅ 5. Expected Output
+(Arjun,85)
+(Vikram,92)
+(Meera,78)
+
+✅ 6. Store Output to HDFS (optional)
+
+Add this line in the script if needed:
+
+STORE result INTO '/output/students';
+
+✅ 7. View Stored Output (optional)
+hdfs dfs -ls /output/students
+hdfs dfs -cat /output/students/part-r-00000

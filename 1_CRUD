@@ -1,0 +1,54 @@
+✅ MongoDB CRUD Practical (Ubuntu – Mongo Shell)
+Create DB → Create Collection → Insert → Update → Delete → Display
+
+---
+
+✅ 1. Open Mongo Shell
+mongosh
+
+---
+
+✅ 2. Create a New Database
+use test1
+
+Output: switched to db test1
+
+---
+
+✅ 3. Create Collection + Insert 5 Documents
+
+db.Students.insertMany([
+{name: "John", dept: "CS", marks: 85},
+{name: "Alice", dept: "IT", marks: 78},
+{name: "Bob", dept: "CS", marks: 92},
+{name: "Carol", dept: "ECE", marks: 65},
+{name: "David", dept: "IT", marks: 88}
+])
+
+---
+
+✅ 4. Update Marks of One Student
+
+db.Students.updateOne(
+{name: "Carol"},
+{$set: {marks: 75}}
+)
+
+---
+
+✅ 5. Delete One Record
+
+db.Students.deleteOne({name: "Bob"})
+
+---
+
+✅ 6. Display All Records
+
+db.Students.find().pretty()
+
+---
+
+✅ 7. (If needed) Delete Database test1
+
+use test1
+db.dropDatabase()
